@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Realización de tests unitarios del programa y resolución de errores - PPS-Unidad1-Tarea-PPS</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">PPS-Unidad1-Tarea-PPS</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#realizacion-de-tests-unitarios-del-programa-y-resolucion-de-errores" class="nav-link">Realización de tests unitarios del programa y resolución de errores</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#test-unitario" class="nav-link">Test unitario</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#resolucion-de-errores" class="nav-link">Resolución de errores</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#test-completados" class="nav-link">Test completados</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="realizacion-de-tests-unitarios-del-programa-y-resolucion-de-errores">Realización de tests unitarios del programa y resolución de errores</h1>
+<p>En este paso se procede a la realización de los tests unitarios del programa para comprobar el correcto funcionamiento en todas las casuisticas posibles del programa</p>
+<h2 id="test-unitario">Test unitario</h2>
+<p>A continuación se muestra el archivo del test unitario resultante y los errores encontrados y solucionados gracias a estos:</p>
+<p><strong>test_lavadero_unittest.py</strong></p>
+<pre><code class="language-python"># tests/test_lavadero_unittest.py
+
+import unittest
+# Importamos la clase Lavadero desde el módulo padre
+from src.lavadero import Lavadero
+
+class TestLavadero(unittest.TestCase):
+
+    # Método que se ejecuta antes de cada test.
+    # Es el equivalente del @pytest.fixture en este contexto.
+    def setUp(self):
+        &quot;&quot;&quot;Prepara una nueva instancia de Lavadero antes de cada prueba.&quot;&quot;&quot;
+        self.lavadero = Lavadero()
+
+    # ----------------------------------------------------------------------    
+    # Función para resetear el estado cuanto terminamos una ejecución de lavado
+    # ----------------------------------------------------------------------
+    def test_reseteo_estado_con_terminar(self):
+        &quot;&quot;&quot;Test 4: Verifica que terminar() resetea todas las flags y el estado.&quot;&quot;&quot;
+        self.lavadero.hacerLavado(True, True, True)
+        self.lavadero._cobrar()
+        self.lavadero.terminar()
+
+        self.assertEqual(self.lavadero.fase, Lavadero.FASE_INACTIVO)
+        self.assertFalse(self.lavadero.ocupado)
+        self.assertFalse(self.lavadero.prelavado_a_mano)
+        self.assertTrue(self.lavadero.ingresos &gt; 0) # Los ingresos deben mantenerse
+
+    # ----------------------------------------------------------------------
+    # TESTS  
+    # ----------------------------------------------------------------------
+
+    # Test de comprobacion de estado inicial
+    def test1_estado_inicial_correcto(self):
+        &quot;&quot;&quot;Test 1: Verifica que el estado inicial es Inactivo y con 0 ingresos.&quot;&quot;&quot;
+        self.assertEqual(self.lavadero.fase, Lavadero.FASE_INACTIVO)
+        self.assertEqual(self.lavadero.ingresos, 0.0)
+        self.assertFalse(self.lavadero.ocupado)
+        self.assertFalse(self.lavadero.prelavado_a_mano)
+        self.assertFalse(self.lavadero.secado_a_mano)
+        self.assertFalse(self.lavadero.encerado)
+
+    def test2_excepcion_encerado_sin_secado(self):
+        &quot;&quot;&quot;Test 2: Comprueba que encerar sin secado a mano lanza ValueError.&quot;&quot;&quot;
+        with self.assertRaises(ValueError):
+            self.lavadero.hacerLavado(False, False, True)
+
+    def test3_excepcion_lavado_con_lavadero_ocupado(self):
+        &quot;&quot;&quot;Test 3: No se puede iniciar un lavado si otro ya está en marcha.&quot;&quot;&quot;
+        self.lavadero.hacerLavado(False, False, False)
+        with self.assertRaises(ValueError):
+            self.lavadero.hacerLavado(False, False, False)
+
+    # Test de comprobacion de ingresos segun el tipo de lavado
+    def test4_ingresos_prelavado(self):
+        &quot;&quot;&quot;Test 4: El prelavado a mano debe generar 6,50€.&quot;&quot;&quot;
+        self.lavadero.hacerLavado(True, False, False)
+        self.lavadero._cobrar()
+        self.assertEqual(self.lavadero.ingresos, 6.50)
+
+    def test5_ingresos_secado(self):
+        &quot;&quot;&quot;Test 5: Secado a mano debe generar 6,00€&quot;&quot;&quot;
+        self.lavadero.hacerLavado(False, True, False)
+        self.lavadero._cobrar()
+        self.assertEqual(self.lavadero.ingresos, 6.00)
+
+    def test6_ingresos_secado_encerado(self):
+        &quot;&quot;&quot;Test 6: Secado + encerado debe generar 7,20€.&quot;&quot;&quot;
+        self.lavadero.hacerLavado(False, True, True)
+        self.lavadero._cobrar()
+        self.assertEqual(self.lavadero.ingresos, 7.20)
+
+    def test7_ingresos_prelavado_secado(self):
+        &quot;&quot;&quot;Test 7: Prelavado + secado debe generar 7,50€&quot;&quot;&quot;
+        self.lavadero.hacerLavado(True, True, False)
+        self.lavadero._cobrar()
+        self.assertEqual(self.lavadero.ingresos, 7.50)
+
+    def test8_ingresos_completo(self):
+        &quot;&quot;&quot;Test 8: Prelavado + secado + encerado debe generar 8,70€&quot;&quot;&quot;
+        self.lavadero.hacerLavado(True, True, True)
+        self.lavadero._cobrar()
+        self.assertEqual(self.lavadero.ingresos, 8.70)
+
+    # ----------------------------------------------------------------------
+    # Tests de flujo de fases
+    # Utilizamos la función def ejecutar_y_obtener_fases(self, prelavado, secado, encerado)
+    # Estos tests dan errores ya que en el código original hay errores en las las fases esperados, en los saltos.
+    # ----------------------------------------------------------------------
+    def test9_flujo_rapido_sin_extras(self):
+        &quot;&quot;&quot;Test 9: Simula el flujo rápido sin opciones opcionales.&quot;&quot;&quot;
+        fases_esperadas = [0, 1, 3, 4, 5, 6, 0]
+
+        # Ejecutar el ciclo completo y obtener las fases
+        fases_obtenidas = self.lavadero.ejecutar_y_obtener_fases(False, False, False)
+
+        # Verificar que las fases obtenidas coinciden con las esperadas
+        self.assertEqual( fases_obtenidas, fases_esperadas,
+                        f&quot;Secuencia de fases incorrecta.\nEsperadas: {fases_esperadas}\nObtenidas: {fases_obtenidas}&quot;)
+
+    def test10_flujo_prelavado(self):
+        &quot;&quot;&quot;Test 10: Flujo con prelavado.&quot;&quot;&quot;
+        fases_esperadas = [0, 1, 2, 3, 4, 5, 6, 0]
+        fases_obtenidas = self.lavadero.ejecutar_y_obtener_fases(True, False, False)
+        self.assertEqual(fases_obtenidas, fases_esperadas)
+
+    def test11_flujo_secado(self):
+        &quot;&quot;&quot;Test 11: Flujo con secado.&quot;&quot;&quot;
+        fases_esperadas = [0, 1, 3, 4, 5, 7, 0]
+        fases_obtenidas = self.lavadero.ejecutar_y_obtener_fases(False, True, False)
+        self.assertEqual(fases_obtenidas, fases_esperadas)
+
+    def test12_flujo_secado_encerado(self):
+        &quot;&quot;&quot;Test 12: Flujo con secado y encerado.&quot;&quot;&quot;
+        fases_esperadas = [0, 1, 3, 4, 5, 7, 8, 0]
+        fases_obtenidas = self.lavadero.ejecutar_y_obtener_fases(False, True, True)
+        self.assertEqual(fases_obtenidas, fases_esperadas)
+
+    def test13_flujo_prelavado_secado(self):
+        &quot;&quot;&quot;Test 13: Flujo con prelavado y secado.&quot;&quot;&quot;
+        fases_esperadas = [0, 1, 2, 3, 4, 5, 7, 0]
+        fases_obtenidas = self.lavadero.ejecutar_y_obtener_fases(True, True, False)
+        self.assertEqual(fases_obtenidas, fases_esperadas)
+
+    def test14_flujo_completo(self):
+        &quot;&quot;&quot;Test 14: Flujo con prelavado, secado y encerado.&quot;&quot;&quot;
+        fases_esperadas = [0, 1, 2, 3, 4, 5, 7, 8, 0]
+        fases_obtenidas = self.lavadero.ejecutar_y_obtener_fases(True, True, True)
+        self.assertEqual(fases_obtenidas, fases_esperadas)
+
+    # Test final completo
+    def test15_reseteo_estado_con_terminar(self):
+        &quot;&quot;&quot;Test extra completo: terminar() debe resetear estador y mantener ingresos.&quot;&quot;&quot;
+        self.lavadero.hacerLavado(True, True, True)
+        self.lavadero._cobrar()
+        self.lavadero.terminar()
+
+        self.assertEqual(self.lavadero.fase, Lavadero.FASE_INACTIVO)
+        self.assertFalse(self.lavadero.ocupado)
+        self.assertFalse(self.lavadero.prelavado_a_mano)
+        self.assertTrue(self.lavadero.ingresos &gt; 0)
+
+# Bloque de ejecución para ejecutar los tests si el archivo es corrido directamente
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+<p><em>Código completo del archivo que contiene el test unitario en el que se testean todas las casuisticas posibles</em></p>
+<h2 id="resolucion-de-errores">Resolución de errores</h2>
+<p>Una vez que ejecutemos el test que se muestra anteriormente con el comando:</p>
+<pre><code class="language-console">python -m unittest ./tests/test_lavadero_unittest.py -v
+</code></pre>
+<p>Cuando lo ejecutamos, en este caso se presentaban errores en el codigo, por lo que en la terminal vamos encontrando todos los logs de cada uno de los test, tanto el que esta OK, como el que presenta un error, los que presentan error, además, añaden un trazo que nos ayuda a identificar el donde se encuentra exactamente el error.</p>
+<p><strong>Errores solucionados en el programa mediante los tests:</strong></p>
+<ul>
+<li><strong>test_lavadero_unittest.py (Linea 20 y 46)</strong>: Mediante los test se encuentra errores en las llamadas a la función <code>_hacer_lavado()</code> de <code>lavadero.py</code>, mientras que la llamada correcta a la función es <code>hacerLavado()</code>.</li>
+</ul>
+<pre><code class="language-python">    self.lavadero.hacerLavado(True, True, True)
+</code></pre>
+<p><em>Linea 20</em></p>
+<pre><code class="language-python">    self.lavadero.hacerLavado(False, False, True)
+</code></pre>
+<p><em>Linea 46</em></p>
+<ul>
+<li><strong>test_lavadero_unittest.py (Linea 98)</strong>: En la llamada a la función <code>assertEqual()</code> falta el paso de los parametros <code>fases esperadas</code> y <code>fases obtenidas</code> para que la función pueda compararlos y comprobar que se obtiene el resultado esperado.</li>
+</ul>
+<pre><code class="language-python">    # Verificar que las fases obtenidas coinciden con las esperadas
+        self.assertEqual( fases_obtenidas, fases_esperadas,
+            f&quot;Secuencia de fases incorrecta.\nEsperadas: {fases_esperadas}\nObtenidas: {fases_obtenidas}&quot;)
+</code></pre>
+<p><em>Linea 98</em></p>
+<ul>
+<li><strong>lavadero.py (Linea 145)</strong>: Mediante los test, tras un fallo en el test nº12, la funcion <code>avanzarFase()</code> en <code>lavadero.py</code> presenta un error. Este es, que cuando entraba en la fase <code>secado a mano</code> directamente terminaba, mientras que lo que tenia que hacer es pasar a la fase de <code>encerado</code> siempre que estuviera marcado el encerado y sino, cuando pasara por esta fase terminar, mientras no.</li>
+</ul>
+<pre><code class="language-python">    elif self.__fase == self.FASE_SECADO_MANO:
+        if self.__encerado:
+            self.__fase = self.FASE_ENCERADO # Si está en la fase &quot;secado a mano&quot; y marcado &quot;encerado&quot; pasa a la fase &quot;encerado&quot;, sino ejecuta la funcion terminar()
+        else:
+            self.terminar()
+</code></pre>
+<p><em>Linea 145</em></p>
+<ul>
+<li><strong>lavadero.py (Linea 98 y 101)</strong>: Mediante los test, tras un fallo en el test nº5 se descubre que los valores que se sumen en la función <code>cobrar()</code> del coste de <em>secado a mano</em> estaba sumando <strong>1,20€</strong> en vez de <strong>1,00€</strong> y en el <em>encerado</em> <strong>1,00€</strong> en vez de <strong>1,20€</strong>.</li>
+</ul>
+<pre><code class="language-python">      if self.__secado_a_mano:
+        coste_lavado += 1.00 
+</code></pre>
+<p><em>Linea 98</em></p>
+<pre><code class="language-python">    if self.__encerado:
+        coste_lavado += 1.20 
+</code></pre>
+<p><em>Linea 101</em></p>
+<ul>
+<li><strong>lavadero.py (Linea 74)</strong>: Mediante el test nº3 se descubre que la excepción arrojada por la función <code>hacerLavado()</code> en <code>lavadero.py</code> cuando se intenta realizar un lavado estando el lavadero <strong>ocupado</strong> es incorrecta, ya que está como <code>runTimeError</code> y debería ser <code>valueError</code>.</li>
+</ul>
+<pre><code class="language-python"> if self.__ocupado: # Si el lavadero está ocupado no se podra iniciar otro lavado diferente
+    raise ValueError(&quot;No se puede iniciar un nuevo lavado mientras el lavadero está ocupado&quot;)
+</code></pre>
+<p><em>Linea 74</em></p>
+<h2 id="test-completados">Test completados</h2>
+<p>Finalmente, tras realizar los test y gracias a estos ir arreglando los fallos encontrados conseguimos un codigo muchos mas robusto, testeado y libre de errores. Una vez que todos los test que hemos programado hayan pasado satisfactoriamente debe aparecer la siguiente información en la terminal donde se ejecuten.</p>
+<p><img alt="Captura test completados 100%" src="../images/testUnitariosCompletados.png" /></p>
+<p><a href="../ejecucionSandbox/"><strong>Siguiente paso (ejecución en SandBox)-&gt;</strong></a></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

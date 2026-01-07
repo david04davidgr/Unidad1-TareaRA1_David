@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Documentación y prueba del programa - PPS-Unidad1-Tarea-PPS</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">PPS-Unidad1-Tarea-PPS</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#documentacion-y-prueba-del-programa" class="nav-link">Documentación y prueba del programa</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#documentacion" class="nav-link">Documentación</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#solucion-de-errores-y-ejecucion" class="nav-link">Solución de errores y ejecución</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#ejecucion-del-programa" class="nav-link">Ejecución del programa</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="documentacion-y-prueba-del-programa">Documentación y prueba del programa</h1>
+<p>En este paso se procede a la documentación del codigo mediante comentarios a lo largo de los dos archivos presentes de codigo fuente, ejecución del programa y realizar algunos arreglos para que se ejecute correctamente el programa</p>
+<h2 id="documentacion">Documentación</h2>
+<p>A continuación se muestran los dos archivos documentados:</p>
+<p><strong>1-. main_app.py</strong></p>
+<pre><code class="language-python"># main_app.py
+
+# Importar la clase desde el otro archivo (módulo)
+from lavadero import Lavadero
+
+# MODIFICACIÓN CLAVE AQUÍ: La función ahora acepta 3 argumentos
+def ejecutarSimulacion(lavadero, prelavado, secado_mano, encerado):
+    &quot;&quot;&quot;
+    Simula el proceso de lavado para un vehículo con las opciones dadas.
+    Ahora acepta una instancia de lavadero.
+
+    :param lavadero: Instancia de Lavadero.
+    :param prelavado: bool, True si se solicita prelavado a mano.
+    :param secado_mano: bool, True si se solicita secado a mano.
+    :param encerado: bool, True si se solicita encerado.
+    &quot;&quot;&quot;
+
+    print(&quot;--- INICIO: Prueba de Lavado con Opciones Personalizadas ---&quot;)
+
+    # Mostrar las opciones solicitadas
+    print(f&quot;Opciones solicitadas: [Prelavado: {prelavado}, Secado a mano: {secado_mano}, Encerado: {encerado}]&quot;)
+
+    # 1. Iniciar el lavado
+    try:
+        # Esto establece las opciones y pasa a Fase 0 (Inactivo, pero Ocupado=True)
+        lavadero.hacerLavado(prelavado, secado_mano, encerado)
+        print(&quot;\nCoche entra. Estado inicial:&quot;)
+        lavadero.imprimir_estado()
+
+        # 2. Avanza por las fases
+        print(&quot;\nAVANZANDO FASE POR FASE:&quot;)
+
+        # Usamos un contador para evitar bucles infinitos en caso de error o bucles inesperados
+        pasos = 0
+        while lavadero.ocupado and pasos &lt; 20: 
+            # El cobro ahora ocurre en la primera llamada a avanzarFase (transición 0 -&gt; 1)
+            lavadero.avanzarFase()
+            print(f&quot;-&gt; Fase actual: &quot;, end=&quot;&quot;)
+            lavadero.imprimir_fase()
+            print() 
+            pasos += 1
+
+        print(&quot;\n----------------------------------------&quot;)
+        print(&quot;Lavado completo. Estado final:&quot;)
+        lavadero.imprimir_estado()
+        print(f&quot;Ingresos acumulados: {lavadero.ingresos:.2f} €&quot;)
+        print(&quot;----------------------------------------&quot;)
+
+    except ValueError as e: # Captura la excepción de regla de negocio (Requisito 2)
+        print(f&quot;ERROR DE ARGUMENTO: {e}&quot;)
+    except RuntimeError as e: # Captura la excepción de estado (Requisito 3)
+        print(f&quot;ERROR DE ESTADO: {e}&quot;)
+    except Exception as e:
+        print(f&quot;ERROR INESPERADO: {e}&quot;)
+
+
+    # Punto de entrada (main): Aquí pasamos los parámetros
+    if __name__ == &quot;__main__&quot;:
+
+        lavadero_global = Lavadero() # Usamos una única instancia para acumular ingresos
+
+        # EJEMPLO 1: Lavado completo con prelavado, secado a mano, con encerado (Requisito 8 y 14)
+        # Precio esperado: 5.00 + 1.50 + 1.00 + 1.20 = 8.70 €
+        print(&quot;\n=======================================================&quot;)
+        print(&quot;EJEMPLO 1: Prelavado (S), Secado a mano (S), Encerado (S)&quot;)
+        ejecutarSimulacion(lavadero_global, prelavado=True, secado_mano=True, encerado=True)
+
+        # EJEMPLO 2: Lavado rápido sin extras (Requisito 9)
+        # Precio esperado: 5.00 €
+        print(&quot;\n=======================================================&quot;)
+        print(&quot;EJEMPLO 2: Sin extras (Prelavado: N, Secado a mano: N, Encerado: N)&quot;)
+        ejecutarSimulacion(lavadero_global, prelavado=False, secado_mano=False, encerado=False)
+
+        # EJEMPLO 3: Lavado con encerado, pero sin secado a mano (Debe lanzar ValueError - Requisito 2)
+        print(&quot;\n=======================================================&quot;)
+        print(&quot;EJEMPLO 3: ERROR (Encerado S, Secado a mano N)&quot;)
+        ejecutarSimulacion(lavadero_global, prelavado=False, secado_mano=False, encerado=True)
+
+        # EJEMPLO 4: Lavado con prelavado a mano (Requisito 4 y 10)
+        # Precio esperado: 5.00 + 1.50 = 6.50 €
+        print(&quot;\n=======================================================&quot;)
+        print(&quot;EJEMPLO 4: Prelavado (S), Secado a mano (N), Encerado (N)&quot;)
+        ejecutarSimulacion(lavadero_global, prelavado=True, secado_mano=False, encerado=False)
+
+</code></pre>
+<p><strong>2-. lavadero.py</strong></p>
+<pre><code class="language-python"># lavadero.py
+
+class Lavadero:
+    &quot;&quot;&quot;
+    Simula el estado y las operaciones de un túnel de lavado de coches.
+    Cumple con los requisitos de estado, avance de fase y reglas de negocio.
+    &quot;&quot;&quot;
+    # Se declaran las constantes con los valores de cada de las fases del lavadero
+    FASE_INACTIVO = 0
+    FASE_COBRANDO = 1
+    FASE_PRELAVADO_MANO = 2
+    FASE_ECHANDO_AGUA = 3
+    FASE_ENJABONANDO = 4
+    FASE_RODILLOS = 5
+    FASE_SECADO_AUTOMATICO = 6
+    FASE_SECADO_MANO = 7
+    FASE_ENCERADO = 8
+
+    # Constructor para la inicialización del lavadero
+    def __init__(self):
+        &quot;&quot;&quot;
+        Constructor de la clase. Inicializa el lavadero.
+        Cumple con el requisito 1.
+        &quot;&quot;&quot;
+        self.__ingresos = 0.0
+        self.__fase = self.FASE_INACTIVO
+        self.__ocupado = False
+        self.__prelavado_a_mano = False
+        self.__secado_a_mano = False
+        self.__encerado = False
+        self.terminar() 
+
+    @property
+    def fase(self):
+        return self.__fase
+
+    @property
+    def ingresos(self):
+        return self.__ingresos
+
+    @property
+    def ocupado(self):
+        return self.__ocupado
+
+    @property
+    def prelavado_a_mano(self):
+        return self.__prelavado_a_mano
+
+    @property
+    def secado_a_mano(self):
+        return self.__secado_a_mano
+
+    @property
+    def encerado(self):
+        return self.__encerado
+
+    # Asigna la fase en &quot;Inactivo&quot; y resetea las opciones de lavado a &quot;false&quot;, requisito 1
+    def terminar(self):
+        self.__fase = self.FASE_INACTIVO
+        self.__ocupado = False
+        self.__prelavado_a_mano = False
+        self.__secado_a_mano = False
+        self.__encerado = False
+
+    # Inicializa un ciclo de lavado segun los parametros dados y valida que los parametros recibidos sean correctos 
+    def hacerLavado(self, prelavado_a_mano, secado_a_mano, encerado):
+        &quot;&quot;&quot;
+        Inicia un nuevo ciclo de lavado, validando reglas de negocio.
+
+        :raises RuntimeError: Si el lavadero está ocupado (Requisito 3).
+        :raises ValueError: Si se intenta encerar sin secado a mano (Requisito 2).
+        &quot;&quot;&quot;
+        if self.__ocupado: # Si el lavadero está ocupado no se podra iniciar otro lavado diferente
+            raise ValueError(&quot;No se puede iniciar un nuevo lavado mientras el lavadero está ocupado&quot;)
+
+        if not secado_a_mano and encerado: # Si no esta secado a mano el coche no se podra seleccionar el encerado
+            raise ValueError(&quot;No se puede encerar el coche sin secado a mano&quot;)
+
+        # Se asigna el estado del lavado, se reserva el lavadero para este lavado y se asignan las opciones marcadas para el lavado
+        self.__fase = self.FASE_INACTIVO  
+        self.__ocupado = True
+        self.__prelavado_a_mano = prelavado_a_mano
+        self.__secado_a_mano = secado_a_mano
+        self.__encerado = encerado
+
+    # Calcula el coste del lavado a cobrar
+    def _cobrar(self):
+        &quot;&quot;&quot;
+        Calcula y añade los ingresos según las opciones seleccionadas (Requisitos 4-8).
+        Precio base: 5.00€ (Implícito, 5.00€ de base + 1.50€ de prelavado + 1.00€ de secado + 1.20€ de encerado = 8.70€)
+        &quot;&quot;&quot;
+        coste_lavado = 5.00
+
+        if self.__prelavado_a_mano:
+            coste_lavado += 1.50 
+
+        if self.__secado_a_mano:
+            coste_lavado += 1.00 
+
+        if self.__encerado:
+            coste_lavado += 1.20 
+
+        self.__ingresos += coste_lavado
+        return coste_lavado
+
+    # Avanza la fase actual segun el transcurso de la ejecución y las opciones seleccionadas
+    def avanzarFase(self):
+
+        if not self.__ocupado: # Si esta ocupado no permitira avanzar de faser 
+            return
+
+        &quot;&quot;&quot;
+        Si esta inactivo se asigna el coste cobrado, 
+        se actualiza a la fase cobrando y se muestra por consola el coste cobrado
+        &quot;&quot;&quot;
+        if self.__fase == self.FASE_INACTIVO: 
+            coste_cobrado = self._cobrar()
+            self.__fase = self.FASE_COBRANDO
+            print(f&quot; (COBRADO: {coste_cobrado:.2f} €) &quot;, end=&quot;&quot;)
+
+        elif self.__fase == self.FASE_COBRANDO:
+            if self.__prelavado_a_mano:
+                self.__fase = self.FASE_PRELAVADO_MANO # Si está en la fase &quot;cobrando&quot; y se ha marcado &quot;prelavado a mano&quot; pasa a la fase &quot;prelavado a mano&quot; 
+            else:
+                self.__fase = self.FASE_ECHANDO_AGUA # Si está en la fase &quot;cobrando&quot; pero no se ha marcado &quot;prelavado a mano&quot; pasa a la fase &quot;echando agua&quot;
+
+        elif self.__fase == self.FASE_PRELAVADO_MANO:
+            self.__fase = self.FASE_ECHANDO_AGUA # Si está en la fase &quot;prelavado a mano&quot; pasa a la fase &quot;echando agua&quot;
+
+        elif self.__fase == self.FASE_ECHANDO_AGUA:
+            self.__fase = self.FASE_ENJABONANDO # Si está en la fase &quot;echando agua&quot; pasa a la fase &quot;enjabonando&quot;
+
+        elif self.__fase == self.FASE_ENJABONANDO:
+            self.__fase = self.FASE_RODILLOS # Si esta en la fase &quot;enjabonando&quot; pasa a la fase &quot;rodillos&quot;
+
+        elif self.__fase == self.FASE_RODILLOS:
+            if self.__secado_a_mano:
+                self.__fase = self.FASE_SECADO_MANO # Si está en la fase &quot;rodillos&quot; y se ha marcado &quot;secado a mano&quot; pasa a la fase &quot;secado a mano&quot;
+            else:
+                self.__fase = self.FASE_SECADO_AUTOMATICO # Si está en la fase &quot;rodillos&quot; pero no se ha marcado &quot;secado a mano&quot; pasa a la fase &quot;secado automático&quot;
+
+        elif self.__fase == self.FASE_SECADO_AUTOMATICO:
+            self.terminar() # Si está en la fase de secado automático se ejectua la función terminar()
+
+        elif self.__fase == self.FASE_SECADO_MANO:
+            if self.__encerado:
+                self.__fase = self.FASE_ENCERADO # Si está en la fase &quot;secado a mano&quot; y marcado &quot;encerado&quot; pasa a la fase &quot;encerado&quot;, sino ejecuta la funcion terminar()
+            else:
+                self.terminar()
+
+        elif self.__fase == self.FASE_ENCERADO:
+            self.terminar() # Si está en la fase &quot;encerado&quot; se ejecuta la función terminar()
+
+        else:
+            raise RuntimeError(f&quot;Estado no válido: Fase {self.__fase}. El lavadero va a estallar...&quot;)
+            # Si está en cualquier fase que no sea ninguna de las anteriores se lanza un error en tiempo de ejecución
+
+    # Mapea todas las fases posibles en el programa y muestra la fase actual
+    def imprimir_fase(self):
+        fases_map = {
+            self.FASE_INACTIVO: &quot;0 - Inactivo&quot;,
+            self.FASE_COBRANDO: &quot;1 - Cobrando&quot;,
+            self.FASE_PRELAVADO_MANO: &quot;2 - Haciendo prelavado a mano&quot;,
+            self.FASE_ECHANDO_AGUA: &quot;3 - Echándole agua&quot;,
+            self.FASE_ENJABONANDO: &quot;4 - Enjabonando&quot;,
+            self.FASE_RODILLOS: &quot;5 - Pasando rodillos&quot;,
+            self.FASE_SECADO_AUTOMATICO: &quot;6 - Haciendo secado automático&quot;,
+            self.FASE_SECADO_MANO: &quot;7 - Haciendo secado a mano&quot;,
+            self.FASE_ENCERADO: &quot;8 - Encerando a mano&quot;,
+        }
+        print(fases_map.get(self.__fase, f&quot;{self.__fase} - En estado no válido&quot;), end=&quot;&quot;)
+
+    # Muestra el estado de general del lavadero
+    def imprimir_estado(self):
+        print(&quot;----------------------------------------&quot;)
+        print(f&quot;Ingresos Acumulados: {self.ingresos:.2f} €&quot;)
+        print(f&quot;Ocupado: {self.ocupado}&quot;)
+        print(f&quot;Prelavado a mano: {self.prelavado_a_mano}&quot;)
+        print(f&quot;Secado a mano: {self.secado_a_mano}&quot;)
+        print(f&quot;Encerado: {self.encerado}&quot;)
+        print(&quot;Fase: &quot;, end=&quot;&quot;)
+        self.imprimir_fase()
+        print(&quot;\n----------------------------------------&quot;)
+
+    # Esta función es útil para pruebas unitarias, no es parte del lavadero real
+    # nos crea un array con las fases visitadas en un ciclo completo
+
+    def ejecutar_y_obtener_fases(self, prelavado, secado, encerado):
+        &quot;&quot;&quot;Ejecuta un ciclo completo y devuelve la lista de fases visitadas.&quot;&quot;&quot;
+        self.hacerLavado(prelavado, secado, encerado)
+        fases_visitadas = [self.fase]
+
+        while self.ocupado:
+            # Usamos un límite de pasos para evitar bucles infinitos en caso de error
+            if len(fases_visitadas) &gt; 15:
+                raise Exception(&quot;Bucle infinito detectado en la simulación de fases.&quot;)
+            self.avanzarFase()
+            fases_visitadas.append(self.fase)
+
+        return fases_visitadas
+
+</code></pre>
+<h2 id="solucion-de-errores-y-ejecucion">Solución de errores y ejecución</h2>
+<p>Durante el proceso de documentación y ejecución se detectan <code>2 fallos</code>:</p>
+<p><strong>1-. main_app.py (linea 83):</strong> En la llamada a la función <code>ejecutarSimulacion()</code> le falta un parametro, el parametro <code>encerado=false</code></p>
+<pre><code class="language-python">    # EJEMPLO 4: Lavado con prelavado a mano (Requisito 4 y 10)
+    # Precio esperado: 5.00 + 1.50 = 6.50 €
+    print(&quot;\n=======================================================&quot;)
+    print(&quot;EJEMPLO 4: Prelavado (S), Secado a mano (N), Encerado (N)&quot;)
+    ejecutarSimulacion(lavadero_global, prelavado=True, secado_mano=False, encerado=False)
+</code></pre>
+<p><strong>2-. lavadero.py (linea 136-141):</strong> Error en una de las fases tras realizar un lavado con todos los extras a N (False), ya que al avanzar la fase de "pasando rodillos" a "secado automatico", pasa a "secado a mano" cuando este extra no se ha seleccionado. Esto pasa debido a la validacion en la funcion <code>avanzarFase()</code>, por lo que se intercambia en las asignaciones <code>self.FASE_SECADO_MANO</code> por <code>self.FASE_SECADO_AUTOMATICO</code> y viceversa. Este error no solo se encuentra en el <strong>ejemplo 2</strong>, sino que tambien se puede encontrar en el <strong>ejemplo 4</strong></p>
+<pre><code class="language-python"># Avanza la fase actual segun el transcurso de la ejecución y las opciones seleccionadas
+    def avanzarFase(self):
+
+        if not self.__ocupado: # Si esta ocupado no permitira avanzar de faser 
+            return
+
+        &quot;&quot;&quot;
+        Si esta inactivo se asigna el coste cobrado, 
+        se actualiza a la fase cobrando y se muestra por consola el coste cobrado
+        &quot;&quot;&quot;
+        if self.__fase == self.FASE_INACTIVO: 
+            coste_cobrado = self._cobrar()
+            self.__fase = self.FASE_COBRANDO
+            print(f&quot; (COBRADO: {coste_cobrado:.2f} €) &quot;, end=&quot;&quot;)
+
+        elif self.__fase == self.FASE_COBRANDO:
+            if self.__prelavado_a_mano:
+                self.__fase = self.FASE_PRELAVADO_MANO # Si está en la fase &quot;cobrando&quot; y se ha marcado &quot;prelavado a mano&quot; pasa a la fase &quot;prelavado a mano&quot; 
+            else:
+                self.__fase = self.FASE_ECHANDO_AGUA # Si está en la fase &quot;cobrando&quot; pero no se ha marcado &quot;prelavado a mano&quot; pasa a la fase &quot;echando agua&quot;
+
+        elif self.__fase == self.FASE_PRELAVADO_MANO:
+            self.__fase = self.FASE_ECHANDO_AGUA # Si está en la fase &quot;prelavado a mano&quot; pasa a la fase &quot;echando agua&quot;
+
+        elif self.__fase == self.FASE_ECHANDO_AGUA:
+            self.__fase = self.FASE_ENJABONANDO # Si está en la fase &quot;echando agua&quot; pasa a la fase &quot;enjabonando&quot;
+
+        elif self.__fase == self.FASE_ENJABONANDO:
+            self.__fase = self.FASE_RODILLOS # Si esta en la fase &quot;enjabonando&quot; pasa a la fase &quot;rodillos&quot;
+
+        elif self.__fase == self.FASE_RODILLOS:
+            if self.__secado_a_mano:
+                self.__fase = self.FASE_SECADO_MANO # Si está en la fase &quot;rodillos&quot; y se ha marcado &quot;secado a mano&quot; pasa a la fase &quot;secado a mano&quot;
+            else:
+                self.__fase = self.FASE_SECADO_AUTOMATICO # Si está en la fase &quot;rodillos&quot; pero no se ha marcado &quot;secado a mano&quot; pasa a la fase &quot;secado automático&quot;
+
+        elif self.__fase == self.FASE_SECADO_AUTOMATICO:
+            self.terminar() # Si está en la fase de secado automático se ejectua la función terminar()
+
+        elif self.__fase == self.FASE_SECADO_MANO:
+            if self.__encerado:
+                self.__fase = self.FASE_ENCERADO # Si está en la fase &quot;secado a mano&quot; y marcado &quot;encerado&quot; pasa a la fase &quot;encerado&quot;, sino ejecuta la funcion terminar()
+            else:
+                self.terminar()
+
+        elif self.__fase == self.FASE_ENCERADO:
+            self.terminar() # Si está en la fase &quot;encerado&quot; se ejecuta la función terminar()
+
+        else:
+            raise RuntimeError(f&quot;Estado no válido: Fase {self.__fase}. El lavadero va a estallar...&quot;)
+            # Si está en cualquier fase que no sea ninguna de las anteriores se lanza un error en tiempo de ejecución
+</code></pre>
+<h2 id="ejecucion-del-programa">Ejecución del programa</h2>
+<p>Una vez solucionados estos errores en el código, el codigo ya se ejecuta completo y sin errores en la ejecución, pero para asegurarnos que toda la lógica del programa esta funcionando correctamente debemos realizar los <strong>tests unitarios</strong> (su función es poder testear todos los casos posibles del programa), pero estos los realizaremos en el siguiente apartado</p>
+<p><img alt="Ejecución del programa en el IDE" src="../images/ejecucionLavadero.png" /></p>
+<p><a href="../testUnitarios/"><strong>Siguiente paso (test unitarios)-&gt;</strong></a></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
