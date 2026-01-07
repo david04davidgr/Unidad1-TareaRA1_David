@@ -371,3 +371,5 @@ Durante el proceso de documentación y ejecución se detectan `2 fallos`:
 
 ## Ejecución del programa
 Una vez solucionados estos errores en el código, el codigo ya se ejecuta completo y sin errores en la ejecución, pero para asegurarnos que toda la lógica del programa esta funcionando correctamente debemos realizar los **tests unitarios** (su función es poder testear todos los casos posibles del programa), pero estos los realizaremos en el siguiente apartado
+
+[**Siguiente paso (test unitarios)->**](testUnitarios.md)

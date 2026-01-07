@@ -4,7 +4,7 @@ En esta tarea se analiza, corrige, ejecuta y testea una aplicación desarrollada
 **Índice**
 
 - [Objetivos](#objetivos)
-- [Desarrollo](#desarrollo) Dentro de desarrollo poner cada uno de los apartados (Documentacion del codigo, correccion de errores, ejecucion, test unitarios...)
+- [Desarrollo](#desarrollo)
 - [Reflexión](#reflexión)
 
 ## Objetivos
@@ -35,3 +35,5 @@ La actividad se ha desarrollado en las siguientes fases:
 ## Reflexión
 
 Los resultados y conclusiones tras finalizar la tarea se pueden ver aqui: [Resultados y conclusiones](./reflexion.md)
+
+[**Siguiente paso (documentación y prueba)->**](documentacionYprueba.md)
