@@ -9,7 +9,7 @@ A continuación se muestra el proceso paso a paso:
     Instalamos FireJail más la extensión de FireTools (Parte gráfica de FireJail) mediante el siguiente comando:
 
     ```console
-    sudo apt install firejail firetools    
+    sudo apt install firejail firetools
     ```
 
     ![Instalación FireJail + Firetools](./images/instalacionFireTools.png)
@@ -21,6 +21,7 @@ A continuación se muestra el proceso paso a paso:
     ```console
     firetools
     ```
+
     ![Ejecución de FireTools](./images/ejecucionFireTools.png)
 
     A través de esta interfaz gráfica podemos cualquier tipo de ajuste o configuración de forma grafica sobre FireJail
@@ -30,7 +31,7 @@ A continuación se muestra el proceso paso a paso:
     Ahora vamos al punto más importante, ejecutaremos el programa *Lavadero* en Sandbox de FireJail mediante el siguiente comando:
 
     ```console
-    firejail --private=. python3 src/main_app.py   
+    firejail --private=. python3 src/main_app.py
     ```
 
     Y podremos ver en la terminal los logs de la ejecución del programa:
@@ -43,8 +44,8 @@ A continuación se muestra el proceso paso a paso:
 
     ```console
     firejail --private=. env PYTHONPATH=src python3 -m unittest discover
-     -v tests
-    ``` 
+    -v tests
+    ```
 
     Y podremos ver en la terminal los logs de la ejecución de los test
 

@@ -224,6 +224,6 @@ Cuando lo ejecutamos, en este caso se presentaban errores en el codigo, por lo q
 ## Test completados
 Finalmente, tras realizar los test y gracias a estos ir arreglando los fallos encontrados conseguimos un codigo muchos mas robusto, testeado y libre de errores. Una vez que todos los test que hemos programado hayan pasado satisfactoriamente debe aparecer la siguiente información en la terminal donde se ejecuten.
 
-![Captura test completados 100%](../docs/images/testUnitariosCompletados.png)
+![Captura test completados 100%](./images/testUnitariosCompletados.png)
 
 [**Siguiente paso (ejecución en SandBox)->**](ejecucionSandbox.md)
